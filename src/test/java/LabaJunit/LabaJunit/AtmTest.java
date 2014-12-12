@@ -3,14 +3,16 @@ package LabaJunit.LabaJunit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
 
 import LabaJunit.LabaJunit.myatm.ATM;
 import LabaJunit.LabaJunit.myatm.Account;
@@ -18,7 +20,28 @@ import LabaJunit.LabaJunit.myatm.Card;
 import LabaJunit.LabaJunit.customATMexceptions.*;
 
 public class AtmTest {
-	
+	 
+	@Test 
+	public void inOrderTestATM() throws NoCardInsertedException, NotEnoughtMoneyInAccountException, NotEnoughtMoneyInATMexception, IllegalArgumentATMException {
+		ATM atm = spy(new ATM(1000));
+		Card card = mock(Card.class);
+		Account account = mock(Account.class);
+		double expectedBalanse = 60;
+		double money=50;
+			when(card.checkPin(1111)).thenReturn(true);
+			when(card.isBlocked()).thenReturn(false);
+			when(card.getAccount()).thenReturn(account);
+			when(account.getBalanse()).thenReturn(expectedBalanse);
+			when(account.withdraw(money)).thenReturn(money);
+			assertTrue(atm.validateCard(card, 1111)); 
+			atm.getCash(money);
+			InOrder order = Mockito.inOrder(account, atm);
+			//order.verify(atm).isCardInATM();
+			
+			order.verify(account).getBalanse();
+			order.verify(atm).getMoneyInATM();
+			order.verify(card.getAccount()).withdraw(money);
+	}
 	
 	@Test
 	(expected = IllegalArgumentException.class)
