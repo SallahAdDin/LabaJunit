@@ -1,4 +1,7 @@
 package LabaJunit.LabaJunit.myatm;
+import static org.mockito.Mockito.*;
+
+import java.awt.List;
 
 import LabaJunit.LabaJunit.customATMexceptions.*; // exceptions
 
@@ -6,9 +9,12 @@ public class ATM {
 	private double moneyInATM;
 	private Card cardInATM;
 	
-	public ATM(double moneyInATM) {
+	public ATM(double moneyInATM) throws IllegalArgumentATMException {
 		this.moneyInATM = moneyInATM;
 		this.cardInATM = null;
+		if (this.moneyInATM < 0) 
+			throw new IllegalArgumentException("It's impossible to create ATM with negative ballance");
+		
 	}
 	
 	public double getMoneyInATM() {
